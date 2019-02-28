@@ -1,14 +1,14 @@
 package com.example.rollthedice;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -16,15 +16,12 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     Button btnRoll;
-    Button btnClearRolls;
+    Button btnHistory;
 
     ImageView diceOne;
     ImageView diceTwo;
 
-    ListView listRolls;
     List<String> diceRollsList = new ArrayList<>();
-
-    ArrayAdapter<String> arrayAdapter;
 
     int amountOfRolls = 1;
 
@@ -37,15 +34,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnRoll = this.findViewById(R.id.rollBtn);
-        btnClearRolls = this.findViewById(R.id.clearRollsBtn);
         diceOne = this.findViewById(R.id.dice1);
         diceTwo = this.findViewById(R.id.dice2);
-        listRolls = this.findViewById(R.id.listRolls);
+        btnHistory = this.findViewById(R.id.btnHistory);
 
-        arrayAdapter = new ArrayAdapter<>
-                (this, android.R.layout.simple_list_item_1, diceRollsList);
-
-        listRolls.setAdapter(arrayAdapter);
 
         btnRoll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,18 +46,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btnClearRolls.setOnClickListener(new View.OnClickListener() {
+
+        btnHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearRolls();
+                Intent historyIntent = new Intent(MainActivity.this, RollHistoryActivity.class);
+                historyIntent.putExtra("diceRollsList", (Serializable) diceRollsList);
+                startActivity(historyIntent);
             }
         });
-    }
-
-    private void clearRolls() {
-        diceRollsList.clear();
-        amountOfRolls = 1;
-        arrayAdapter.notifyDataSetChanged();
     }
 
     private void rollTheDices() {
@@ -84,6 +73,5 @@ public class MainActivity extends AppCompatActivity {
         diceRollsList.add("Roll " + amountOfRolls + ": First dice rolled " + (diceOneRoll + 1) + " - Second dice rolled " + (diceTwoRoll + 1));
 
         amountOfRolls++;
-        arrayAdapter.notifyDataSetChanged();
     }
 }
