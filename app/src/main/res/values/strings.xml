@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">RollTheDice</string>
+    <string name="dice1">First dice</string>
+    <string name="dice2">Second dice</string>
+    <string name="roll">Roll</string>
+    <string name="clearRolls">Clear Rolls</string>
+</resources>
