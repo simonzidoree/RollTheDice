@@ -2,6 +2,7 @@ package com.example.rollthedice;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent historyIntent = new Intent(MainActivity.this, RollHistoryActivity.class);
                 historyIntent.putExtra("diceRollsList", (Serializable) diceRollsList);
-                startActivity(historyIntent);
+                startActivityForResult(historyIntent, 1);
             }
         });
     }
@@ -73,5 +74,16 @@ public class MainActivity extends AppCompatActivity {
         diceRollsList.add("Roll " + amountOfRolls + ": First dice rolled " + (diceOneRoll + 1) + " - Second dice rolled " + (diceTwoRoll + 1));
 
         amountOfRolls++;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                diceRollsList = (List<String>) data.getSerializableExtra("clearedDiceList");
+                amountOfRolls = data.getIntExtra("amountOfRolls", 1);
+            }
+        }
     }
 }
