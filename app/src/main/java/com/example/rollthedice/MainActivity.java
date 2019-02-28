@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -20,15 +21,15 @@ public class MainActivity extends AppCompatActivity {
 
     Button btnRoll;
     Button btnHistory;
-
-    ImageView diceOne;
-    ImageView diceTwo;
+    NumberPicker np;
 
     List<String> diceRollsList = new ArrayList<>();
 
     int amountOfRolls = 1;
+    int chosenDiceNumber = 1;
 
     Random rndNumb = new Random();
+    ImageView[] dices;
     int[] diceImages = {R.drawable.d1, R.drawable.d2, R.drawable.d3, R.drawable.d4, R.drawable.d5, R.drawable.d6};
 
     @Override
@@ -37,10 +38,27 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         btnRoll = this.findViewById(R.id.rollBtn);
-        diceOne = this.findViewById(R.id.dice1);
-        diceTwo = this.findViewById(R.id.dice2);
         btnHistory = this.findViewById(R.id.btnHistory);
+        np = this.findViewById(R.id.numberPicker);
+        dices = new ImageView[]{findViewById(R.id.dice1), findViewById(R.id.dice2), findViewById(R.id.dice3), findViewById(R.id.dice4), findViewById(R.id.dice5), findViewById(R.id.dice6)};
 
+        np.setMinValue(1);
+        np.setMaxValue(6);
+
+        np.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                chosenDiceNumber = picker.getValue();
+
+                for (int i = 0; i < 6; i++) {
+                    dices[i].setVisibility(View.INVISIBLE);
+                }
+
+                for (int j = 0; j < picker.getValue(); j++) {
+                    dices[j].setVisibility(View.VISIBLE);
+                }
+            }
+        });
 
         btnRoll.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,24 +76,25 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(historyIntent, 1);
             }
         });
+
     }
 
     private void rollTheDices() {
         Log.d("RollTheDicesM", "Dices rolled...");
 
-        int diceOneRoll = rndNumb.nextInt(diceImages.length);
-        int diceTwoRoll = rndNumb.nextInt(diceImages.length);
-
-        Log.d("First dice rolled ", String.valueOf(diceOneRoll + 1));
-        Log.d("Second dice rolled ", String.valueOf(diceTwoRoll + 1));
-
-        diceOne.setImageResource(diceImages[diceOneRoll]);
-
-        diceTwo.setImageResource(diceImages[diceTwoRoll]);
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
-        diceRollsList.add("Roll " + amountOfRolls + " at " + simpleDateFormat.format(timeStamp) + ": " + (diceOneRoll + 1) + " - " + (diceTwoRoll + 1));
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < chosenDiceNumber; i++) {
+            int randomNumber = rndNumb.nextInt(diceImages.length);
+            stringBuilder.append(randomNumber + 1 + ", ");
+            dices[i].setImageResource(diceImages[randomNumber]);
+        }
+
+        stringBuilder.deleteCharAt(stringBuilder.length() - 2);
+
+        diceRollsList.add("Roll " + amountOfRolls + " at " + simpleDateFormat.format(timeStamp) + ": " + stringBuilder);
 
         amountOfRolls++;
     }
