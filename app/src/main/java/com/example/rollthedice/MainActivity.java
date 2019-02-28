@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -71,7 +73,9 @@ public class MainActivity extends AppCompatActivity {
 
         diceTwo.setImageResource(diceImages[diceTwoRoll]);
 
-        diceRollsList.add("Roll " + amountOfRolls + ": First dice rolled " + (diceOneRoll + 1) + " - Second dice rolled " + (diceTwoRoll + 1));
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
+        Timestamp timeStamp = new Timestamp(System.currentTimeMillis());
+        diceRollsList.add("Roll " + amountOfRolls + " at " + simpleDateFormat.format(timeStamp) + ": " + (diceOneRoll + 1) + " - " + (diceTwoRoll + 1));
 
         amountOfRolls++;
     }
